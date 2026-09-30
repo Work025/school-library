@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
+import API_URL from '../../config/api.js'
 import './PDFViewer.css'
 
 function PDFViewer() {
@@ -19,7 +20,7 @@ function PDFViewer() {
     )
   }
 
-  const pdfUrl = book.pdf ? `http://localhost:5000${book.pdf}` : ''
+  const pdfUrl = book.pdf ? `${API_URL}${book.pdf}` : ''
 
   return (
     <main className="pdf-viewer-page">

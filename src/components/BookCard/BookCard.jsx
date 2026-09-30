@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import API_URL from '../../config/api.js'
 import './BookCard.css'
 
 function BookCard({ title, author, image, pdf }) {
@@ -18,7 +19,7 @@ function BookCard({ title, author, image, pdf }) {
     <article className="book-card">
       <div className="book-card-image">
         {image ? (
-          <img src={`http://localhost:5000${image}`} alt={title} />
+          <img src={`${API_URL}${image}`} alt={title} />
         ) : (
           <div className="book-card-placeholder">No Cover</div>
         )}

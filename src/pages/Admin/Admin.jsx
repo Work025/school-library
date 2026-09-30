@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
+import API_URL from '../../config/api.js'
 import './Admin.css'
-
-const API_URL = 'http://localhost:5000/api/books'
 
 const categories = [
   'Library',
@@ -48,7 +47,7 @@ function Admin() {
     setError('')
 
     try {
-      const response = await fetch(API_URL)
+      const response = await fetch(`${API_URL}/api/books`)
       const data = await response.json()
 
       if (!response.ok || !data.success) {
@@ -120,7 +119,9 @@ function Admin() {
 
       const isEditing = Boolean(editingId)
 
-      const url = isEditing ? `${API_URL}/${editingId}` : API_URL
+      const url = isEditing
+        ? `${API_URL}/api/books/${editingId}`
+        : `${API_URL}/api/books`
 
       const method = isEditing ? 'PUT' : 'POST'
 
@@ -201,7 +202,7 @@ function Admin() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_URL}/api/books/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -412,7 +413,7 @@ function Admin() {
                     <div className="admin-book-cover">
                       {book.image ? (
                         <img
-                          src={`http://localhost:5000${book.image}`}
+                          src={`${API_URL}${book.image}`}
                           alt={book.title}
                         />
                       ) : (

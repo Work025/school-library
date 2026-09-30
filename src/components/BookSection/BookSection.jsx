@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Search from '../Search/Search.jsx'
 import BookCard from '../BookCard/BookCard.jsx'
+import API_URL from '../../config/api.js'
 import './BookSection.css'
 
 function BookSection({ id, title, category }) {
@@ -9,7 +10,7 @@ function BookSection({ id, title, category }) {
   const [searched, setSearched] = useState(false)
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/books')
+    fetch(`${API_URL}/api/books`)
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
