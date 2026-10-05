@@ -4,40 +4,52 @@ require('dotenv').config()
 
 const User = require('./models/User')
 
-async function createAdmin() {
+async function createOrUpdateAdmin() {
   try {
     await mongoose.connect(process.env.MONGODB_URI)
 
     console.log('MongoDB connected.')
 
+    const email = process.env.ADMIN_EMAIL
+    const password = process.env.ADMIN_PASSWORD
+
+    if (!email || !password) {
+      throw new Error(
+        'ADMIN_EMAIL or ADMIN_PASSWORD is missing in environment variables.',
+      )
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12)
+
     const existingUser = await User.findOne({
-      email: process.env.ADMIN_EMAIL,
+      email: email.toLowerCase().trim(),
     })
 
     if (existingUser) {
-      console.log('Admin user already exists.')
-      process.exit(0)
+      existingUser.password = hashedPassword
+      existingUser.role = 'admin'
+
+      await existingUser.save()
+
+      console.log('Admin password updated successfully.')
+    } else {
+      await User.create({
+        email: email.toLowerCase().trim(),
+        password: hashedPassword,
+        role: 'admin',
+      })
+
+      console.log('Admin user created successfully.')
     }
-
-    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12)
-
-    const admin = await User.create({
-      email: process.env.ADMIN_EMAIL,
-      password: hashedPassword,
-      role: 'admin',
-    })
-
-    console.log('Admin user created successfully.')
-    console.log(`Email: ${admin.email}`)
 
     await mongoose.disconnect()
     process.exit(0)
   } catch (error) {
-    console.error('Failed to create admin:', error.message)
+    console.error('Failed to create/update admin:', error.message)
 
     await mongoose.disconnect()
     process.exit(1)
   }
 }
 
-createAdmin()
+createOrUpdateAdmin()
