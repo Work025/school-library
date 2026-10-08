@@ -6,10 +6,13 @@ const Book = require('../models/Book')
 const protectAdmin = require('../middleware/authMiddleware')
 
 const router = express.Router()
+const uploadDir = path.join(__dirname, '..', 'uploads')
+
+fs.mkdirSync(uploadDir, { recursive: true })
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, 'uploads/')
+    callback(null, uploadDir)
   },
 
   filename: (req, file, callback) => {
